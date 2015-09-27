@@ -9,13 +9,20 @@
 #import "LBLargeImgBrowserView.h"
 
 @implementation LBLargeImgBrowserView
-
-/*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect {
-    // Drawing code
+- (instancetype)initWithFrame:(CGRect)frame {
+    if (self = [super initWithFrame:frame]) {
+        self.opaque = NO;
+        self.backgroundColor = [UIColor clearColor];
+        
+        // 添加一个scrollView
+        self.scrollView = [[UIScrollView alloc]initWithFrame:self.bounds];
+        [self addSubview:self.scrollView];
+        
+        // 添加一个pageControl
+        self.pageControl = [[UIPageControl alloc]init];
+        self.pageControl.center = CGPointMake(self.center.x, 0.9*self.frame.size.height);
+        [self addSubview:self.pageControl];
+    }
+    return self;
 }
-*/
-
 @end

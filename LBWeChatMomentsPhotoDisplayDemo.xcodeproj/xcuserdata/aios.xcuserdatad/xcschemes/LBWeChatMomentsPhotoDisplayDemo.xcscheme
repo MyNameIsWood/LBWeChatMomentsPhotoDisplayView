@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Scheme
+   LastUpgradeVersion = "0630"
+   version = "1.3">
+   <BuildAction
+      parallelizeBuildables = "YES"
+      buildImplicitDependencies = "YES">
+      <BuildActionEntries>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "305CE6FF1BAF9BA100C2E6D3"
+               BuildableName = "LBWeChatMomentsPhotoDisplayDemo.app"
+               BlueprintName = "LBWeChatMomentsPhotoDisplayDemo"
+               ReferencedContainer = "container:LBWeChatMomentsPhotoDisplayDemo.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "305CE7181BAF9BA100C2E6D3"
+               BuildableName = "LBWeChatMomentsPhotoDisplayDemoTests.xctest"
+               BlueprintName = "LBWeChatMomentsPhotoDisplayDemoTests"
+               ReferencedContainer = "container:LBWeChatMomentsPhotoDisplayDemo.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+      </BuildActionEntries>
+   </BuildAction>
+   <TestAction
+      selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
+      selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
+      shouldUseLaunchSchemeArgsEnv = "YES"
+      buildConfiguration = "Debug">
+      <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "305CE7181BAF9BA100C2E6D3"
+               BuildableName = "LBWeChatMomentsPhotoDisplayDemoTests.xctest"
+               BlueprintName = "LBWeChatMomentsPhotoDisplayDemoTests"
+               ReferencedContainer = "container:LBWeChatMomentsPhotoDisplayDemo.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+      </Testables>
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "305CE6FF1BAF9BA100C2E6D3"
+            BuildableName = "LBWeChatMomentsPhotoDisplayDemo.app"
+            BlueprintName = "LBWeChatMomentsPhotoDisplayDemo"
+            ReferencedContainer = "container:LBWeChatMomentsPhotoDisplayDemo.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
+   </TestAction>
+   <LaunchAction
+      selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
+      selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
+      launchStyle = "0"
+      useCustomWorkingDirectory = "NO"
+      buildConfiguration = "Debug"
+      ignoresPersistentStateOnLaunch = "NO"
+      debugDocumentVersioning = "YES"
+      allowLocationSimulation = "YES">
+      <BuildableProductRunnable
+         runnableDebuggingMode = "0">
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "305CE6FF1BAF9BA100C2E6D3"
+            BuildableName = "LBWeChatMomentsPhotoDisplayDemo.app"
+            BlueprintName = "LBWeChatMomentsPhotoDisplayDemo"
+            ReferencedContainer = "container:LBWeChatMomentsPhotoDisplayDemo.xcodeproj">
+         </BuildableReference>
+      </BuildableProductRunnable>
+      <AdditionalOptions>
+      </AdditionalOptions>
+   </LaunchAction>
+   <ProfileAction
+      shouldUseLaunchSchemeArgsEnv = "YES"
+      savedToolIdentifier = ""
+      useCustomWorkingDirectory = "NO"
+      buildConfiguration = "Release"
+      debugDocumentVersioning = "YES">
+      <BuildableProductRunnable
+         runnableDebuggingMode = "0">
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "305CE6FF1BAF9BA100C2E6D3"
+            BuildableName = "LBWeChatMomentsPhotoDisplayDemo.app"
+            BlueprintName = "LBWeChatMomentsPhotoDisplayDemo"
+            ReferencedContainer = "container:LBWeChatMomentsPhotoDisplayDemo.xcodeproj">
+         </BuildableReference>
+      </BuildableProductRunnable>
+   </ProfileAction>
+   <AnalyzeAction
+      buildConfiguration = "Debug">
+   </AnalyzeAction>
+   <ArchiveAction
+      buildConfiguration = "Release"
+      revealArchiveInOrganizer = "YES">
+   </ArchiveAction>
+</Scheme>

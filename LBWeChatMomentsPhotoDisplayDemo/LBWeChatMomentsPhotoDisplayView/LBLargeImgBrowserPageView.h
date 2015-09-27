@@ -8,6 +8,9 @@
 
 #import <UIKit/UIKit.h>
 
-@interface LBLargeImgBrowserPageView : UIScrollView
-
+@interface LBLargeImgBrowserPageView : UIView
+@property (weak, nonatomic) UIImage* image;
+@property (assign, nonatomic) UIViewContentMode contentMode;
+@property (assign, nonatomic) CGFloat maximumZoomScale;
+@property (assign, nonatomic) CGFloat zoomScale;
 @end
