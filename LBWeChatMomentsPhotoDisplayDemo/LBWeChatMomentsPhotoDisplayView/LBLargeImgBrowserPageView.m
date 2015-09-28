@@ -44,6 +44,7 @@
 }
 
 - (CGFloat)zoomScale {
+   
     return self.scrollView.zoomScale;
 }
 
@@ -105,6 +106,7 @@
     if (scrollView.contentSize.width <= scrollView.bounds.size.width) {
         [self.imageView setCenter:CGPointMake(0.5*scrollView.bounds.size.width, 0.5*scrollView.bounds.size.height)];
     }
+    
 }
 
 @end

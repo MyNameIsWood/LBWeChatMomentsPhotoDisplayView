@@ -197,12 +197,14 @@
 // 图片放大
 - (void)zoomInWithImageView:(UIImageView*)tappedView {
     
+    
     // 先显示小图
     LBLargeImgBrowserPageView* largeView = [[LBLargeImgBrowserPageView alloc]init];
     largeView.image = tappedView.image;
     largeView.maximumZoomScale = self.maximumZoomScale;
-    self.largeImgPageViews[tappedView.tag] = largeView;
-   
+    
+    [self.largeImgPageViews addObject:largeView];
+    
     // 加上一朵菊花
     UIActivityIndicatorView* indicator = [[UIActivityIndicatorView alloc]init];
     indicator.center = CGPointMake(CGRectGetMidX(largeView.bounds), CGRectGetMidY(largeView.bounds));
@@ -282,7 +284,12 @@
         LBLargeImgBrowserPageView* largeView = [[LBLargeImgBrowserPageView alloc]init];
         largeView.image = ((UIImageView*)self.subviews[index]).image;
         largeView.maximumZoomScale = self.maximumZoomScale;
-        self.largeImgPageViews[index] = largeView;
+        
+        if (index > tappedView.tag) {// 放在self.largeImgPageViews数组的后面
+            [self.largeImgPageViews addObject:largeView];
+        }else {// 放在self.largeImgPageViews数组的前面
+            [self.largeImgPageViews insertObject:largeView atIndex:index];
+        }
         
         // 加上一朵菊花
         UIActivityIndicatorView* indicator = [[UIActivityIndicatorView alloc]init];
@@ -350,11 +357,17 @@
 
 // 大图被点击了
 - (void)largeImgViewTapped:(UITapGestureRecognizer*)tap {
-    [self zoomOutWithImageView:(UIImageView*)tap.view];
+    [self zoomOutWithImageView:(LBLargeImgBrowserPageView*)tap.view];
 }
 
 // 大图缩小
-- (void)zoomOutWithImageView:(UIImageView*)tappedView {
+- (void)zoomOutWithImageView:(LBLargeImgBrowserPageView*)tappedView {
+    
+    // 如果图片正在被缩放 则还原
+    if (tappedView.zoomScale != 1) {
+        tappedView.zoomScale = 1;
+    }
+    
     // 背景变透明
     self.browser.scrollView.backgroundColor = [UIColor clearColor];
     self.browser.pageControl.hidden = YES;
@@ -369,7 +382,7 @@
     } completion:^(BOOL finished) {
         [self.browser removeFromSuperview];
         self.browser = nil;
-        
+        self.largeImgPageViews = nil;
         _previousPage = 0;
     }];
 }
@@ -381,10 +394,12 @@
     if (tempPage != _previousPage) {
         if (scrollView.contentOffset.x == tempPage*scrollView.bounds.size.width) {
             self.browser.pageControl.currentPage = tempPage;
+            
+            [self.largeImgPageViews enumerateObjectsUsingBlock:^(LBLargeImgBrowserPageView* page, NSUInteger idx, BOOL *stop) {
+                NSLog(@"page%ld.zoomScale:%f",idx,page.zoomScale);
+            }];
         }
     }
-    
-     
     
     if (self.browser.pageControl.currentPage != _previousPage) {// 说明已经翻页了
         
@@ -393,6 +408,7 @@
         if (largeView.zoomScale != 1) {
             largeView.zoomScale = 1;
         }
+        
         
         _previousPage = self.browser.pageControl.currentPage;
     }
