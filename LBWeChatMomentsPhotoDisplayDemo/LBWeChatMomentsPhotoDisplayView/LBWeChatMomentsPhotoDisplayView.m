@@ -15,7 +15,7 @@
 #define LBWidth  [UIScreen mainScreen].bounds.size.width
 #define LBHeight [UIScreen mainScreen].bounds.size.height
 #define zoomDuration 0.35
-#define photoViewScaleWhenOnePhoto 2
+#define photoViewScaleWhenOnePhoto 1.5
 
 @interface LBWeChatMomentsPhotoDisplayView()<UIScrollViewDelegate>
 /* 记录下载完成了多少张小图片 */
@@ -187,7 +187,7 @@
 - (void)thumbnailTapped:(UITapGestureRecognizer*)tap {// 处理图片点击事件：放大图片
     
     // 先预下载图片
-    [[SDWebImagePrefetcher sharedImagePrefetcher] prefetchURLs:self.largeImgUrls];
+    //[[SDWebImagePrefetcher sharedImagePrefetcher] prefetchURLs:self.largeImgUrls];
     
     // 放大图片
     [self zoomInWithImageView:(UIImageView*)tap.view];
@@ -205,15 +205,12 @@
     
     [self.largeImgPageViews addObject:largeView];
     
-    // 加上一朵菊花
-    UIActivityIndicatorView* indicator = [[UIActivityIndicatorView alloc]init];
-    indicator.center = CGPointMake(CGRectGetMidX(largeView.bounds), CGRectGetMidY(largeView.bounds));
-    [largeView addSubview:indicator];
     
+    // 加载大图
     NSURL* URL = [NSURL URLWithString:(NSString*)self.largeImgUrls[tappedView.tag]];
-    [[SDWebImageManager sharedManager]downloadImageWithURL:URL options:0 progress:^(NSInteger receivedSize, NSInteger expectedSize) {
+    [[SDWebImageManager sharedManager]downloadImageWithURL:URL options:SDWebImageHighPriority progress:^(NSInteger receivedSize, NSInteger expectedSize) {
         // 还未下载完 会多次调用
-        if (!indicator.isAnimating) {// 如果菊花没转
+        if (!largeView.isWaiting) {// 如果菊花没转
             
             // 计算小图在scrollView中的frame
             largeView.bounds = tappedView.bounds;
@@ -225,7 +222,7 @@
             [self.window addSubview:self.browser];
             
             // 菊花转
-            [indicator startAnimating];
+            [largeView wait];
         }
         
         
@@ -236,13 +233,11 @@
             
         }else {// 下载成功
             
-            if (indicator.isAnimating) {// 转过菊花
-                [indicator stopAnimating];
-                [indicator removeFromSuperview];
+            if (largeView.isWaiting) {// 转过菊花
+                [largeView endWaiting];
                
                 
             }else {// 没转过菊花 直接下载完成
-                [indicator removeFromSuperview];
                 
                 // 计算小图在scrollView中的frame
                 CGRect rect = [self convertRect:tappedView.frame toView:self.window];
@@ -291,15 +286,11 @@
             [self.largeImgPageViews insertObject:largeView atIndex:index];
         }
         
-        // 加上一朵菊花
-        UIActivityIndicatorView* indicator = [[UIActivityIndicatorView alloc]init];
-        indicator.center = CGPointMake(CGRectGetMidX(largeView.bounds), CGRectGetMidY(largeView.bounds));
-        [largeView addSubview:indicator];
-        
+        // 加载大图
         NSURL* URL = [NSURL URLWithString:(NSString*)self.largeImgUrls[index]];
-        [[SDWebImageManager sharedManager]downloadImageWithURL:URL options:0 progress:^(NSInteger receivedSize, NSInteger expectedSize) {
+        [[SDWebImageManager sharedManager]downloadImageWithURL:URL options:SDWebImageHighPriority progress:^(NSInteger receivedSize, NSInteger expectedSize) {
             // 还未下载完 会多次调用
-            if (!indicator.isAnimating) {// 如果菊花没转
+            if (!largeView.isWaiting) {// 如果菊花没转
                 
                 // 计算小图在scrollView中的frame
                 largeView.bounds = tappedView.bounds;
@@ -307,10 +298,9 @@
                 
                 // 添加在browser
                 [self.browser.scrollView addSubview:largeView];
-               
                 
                 // 菊花转
-                [indicator startAnimating];
+                [largeView wait];
             }
             
             
@@ -321,9 +311,8 @@
 #warning 添加处理下载出错的代码
                 
             }else {// 下载成功
-                if (indicator.isAnimating) {// 转过菊花
-                    [indicator stopAnimating];
-                    [indicator removeFromSuperview];
+                if (largeView.isWaiting) {// 转过菊花
+                    [largeView endWaiting];
                     
                     // 动画
                     largeView.image = image;
@@ -337,7 +326,6 @@
                         largeView.userInteractionEnabled = YES;
                     }];
                 }else {// 没转过菊花 直接下载完成
-                    [indicator removeFromSuperview];
                     
                     // largeView添加到scrollView上
                     largeView.image = image;
@@ -395,9 +383,6 @@
         if (scrollView.contentOffset.x == tempPage*scrollView.bounds.size.width) {
             self.browser.pageControl.currentPage = tempPage;
             
-            [self.largeImgPageViews enumerateObjectsUsingBlock:^(LBLargeImgBrowserPageView* page, NSUInteger idx, BOOL *stop) {
-                NSLog(@"page%ld.zoomScale:%f",idx,page.zoomScale);
-            }];
         }
     }
     

@@ -10,6 +10,7 @@
 @interface LBLargeImgBrowserPageView()<UIScrollViewDelegate>
 @property (strong, nonatomic) UIImageView* imageView;
 @property (strong, nonatomic) UIScrollView* scrollView;
+@property (strong, nonatomic) UIActivityIndicatorView* indicator;
 @end
 @implementation LBLargeImgBrowserPageView
 
@@ -38,6 +39,15 @@
     return _scrollView;
 }
 
+// 懒加载
+- (UIActivityIndicatorView *)indicator {
+    if (_indicator == nil) {
+        _indicator = [[UIActivityIndicatorView alloc]init];
+        _indicator.center = CGPointMake(CGRectGetMidX(self.bounds), CGRectGetMidY(self.bounds));
+    }
+    return _indicator;
+}
+
 // zoomScale 的 setter 和 getter 方法
 - (void)setZoomScale:(CGFloat)zoomScale {
     self.scrollView.zoomScale = zoomScale;
@@ -56,9 +66,7 @@
         
         // 设置一些属性
         self.backgroundColor = [UIColor clearColor];
-        
-        
-        
+    
     }
     return self;
 }
@@ -67,6 +75,10 @@
     [super setFrame:frame];
     self.scrollView.frame = self.bounds;
     self.imageView.frame = self.bounds;
+    if (self.indicator) {
+        self.indicator.center = CGPointMake(CGRectGetMidX(self.bounds), CGRectGetMidY(self.bounds));
+    }
+    
     [self setNeedsLayout];
 }
 
@@ -74,6 +86,10 @@
     [super setBounds:bounds];
     self.scrollView.frame = self.bounds;
     self.imageView.frame = self.bounds;
+    if (self.indicator) {
+        self.indicator.center = CGPointMake(CGRectGetMidX(self.bounds), CGRectGetMidY(self.bounds));
+    }
+    
     [self setNeedsLayout];
 }
 
@@ -94,6 +110,29 @@
 // image的get方法
 - (UIImage *)image {
     return self.imageView.image;
+}
+
+// isWaiting标志的获取方法
+- (BOOL)isWaiting {
+    if (self.indicator) {
+        if ([self.indicator isAnimating]) {
+            return YES;
+        }
+    }
+    return NO;
+}
+
+// 使等待
+- (void)wait {
+    [self addSubview:self.indicator];
+    [self.indicator startAnimating];
+}
+
+// 结束等待
+- (void)endWaiting {
+    [self.indicator stopAnimating];
+    [self.indicator removeFromSuperview];
+    self.indicator = nil;
 }
 
 #pragma mark - UIScrollViewDelegate
