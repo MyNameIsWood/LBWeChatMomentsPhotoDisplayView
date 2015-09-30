@@ -199,7 +199,7 @@
     
     
     // 先显示小图
-    LBLargeImgBrowserPageView* largeView = [[LBLargeImgBrowserPageView alloc]init];
+    LBLargeImgBrowserPageView* largeView = [[LBLargeImgBrowserPageView alloc]initWithFrame:CGRectMake(tappedView.tag*LBWidth+self.largeViewMargin, self.largeViewMargin, LBWidth-2*self.largeViewMargin, LBHeight-2*self.largeViewMargin)];
     largeView.image = tappedView.image;
     largeView.maximumZoomScale = self.maximumZoomScale;
     
@@ -208,13 +208,13 @@
     
     // 加载大图
     NSURL* URL = [NSURL URLWithString:(NSString*)self.largeImgUrls[tappedView.tag]];
-    [[SDWebImageManager sharedManager]downloadImageWithURL:URL options:SDWebImageHighPriority progress:^(NSInteger receivedSize, NSInteger expectedSize) {
+    [[SDWebImageManager sharedManager]downloadImageWithURL:URL options:0 progress:^(NSInteger receivedSize, NSInteger expectedSize) {
         // 还未下载完 会多次调用
         if (!largeView.isWaiting) {// 如果菊花没转
             
-            // 计算小图在scrollView中的frame
-            largeView.bounds = tappedView.bounds;
-            largeView.center = CGPointMake(tappedView.tag*LBWidth+0.5*LBWidth, 0.5*LBHeight);
+            // 小图显示在Page的中间
+
+            largeView.imageViewFrame = CGRectMake(0.5*(largeView.bounds.size.width-tappedView.bounds.size.width), 0.5*(largeView.bounds.size.height-tappedView.bounds.size.height), tappedView.bounds.size.width, tappedView.bounds.size.height);
             
             // 显示在window上
             [self.browser.scrollView setContentOffset:CGPointMake(tappedView.tag*LBWidth, 0)];
@@ -241,8 +241,7 @@
                 
                 // 计算小图在scrollView中的frame
                 CGRect rect = [self convertRect:tappedView.frame toView:self.window];
-                rect.origin.x += tappedView.tag*LBWidth;
-                largeView.frame = rect;
+                largeView.imageViewFrame = rect;
                 
                 // largeView添加到scrollView上
                 [self.browser.scrollView addSubview:largeView];
@@ -253,8 +252,9 @@
             largeView.image = image;
             [UIView animateWithDuration:zoomDuration animations:^{
                 // 设置放大后的frame
-                largeView.frame = CGRectMake(tappedView.tag*LBWidth+self.largeViewMargin, self.largeViewMargin, LBWidth-2*self.largeViewMargin, LBHeight-2*self.largeViewMargin);
-                largeView.contentMode = UIViewContentModeScaleAspectFit;
+
+                largeView.imageViewFrame = [self getFrameWithImageSize:image.size inContainerRect:largeView.bounds];
+                
             
             } completion:^(BOOL finished) {
                 [largeView addGestureRecognizer:[[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(largeImgViewTapped:)]];
@@ -276,7 +276,7 @@
         // 下面的跟上面的代码差不多
         
         // 先显示小图
-        LBLargeImgBrowserPageView* largeView = [[LBLargeImgBrowserPageView alloc]init];
+        LBLargeImgBrowserPageView* largeView = [[LBLargeImgBrowserPageView alloc]initWithFrame:CGRectMake(index*LBWidth+self.largeViewMargin, self.largeViewMargin, LBWidth-2*self.largeViewMargin, LBHeight-2*self.largeViewMargin)];
         largeView.image = ((UIImageView*)self.subviews[index]).image;
         largeView.maximumZoomScale = self.maximumZoomScale;
         
@@ -288,13 +288,13 @@
         
         // 加载大图
         NSURL* URL = [NSURL URLWithString:(NSString*)self.largeImgUrls[index]];
-        [[SDWebImageManager sharedManager]downloadImageWithURL:URL options:SDWebImageHighPriority progress:^(NSInteger receivedSize, NSInteger expectedSize) {
+        [[SDWebImageManager sharedManager]downloadImageWithURL:URL options:0 progress:^(NSInteger receivedSize, NSInteger expectedSize) {
             // 还未下载完 会多次调用
             if (!largeView.isWaiting) {// 如果菊花没转
                 
                 // 计算小图在scrollView中的frame
-                largeView.bounds = tappedView.bounds;
-                largeView.center = CGPointMake(index*LBWidth+0.5*LBWidth, 0.5*LBHeight);
+                
+                largeView.imageViewFrame = CGRectMake(0.5*(largeView.bounds.size.width-tappedView.bounds.size.width), 0.5*(largeView.bounds.size.height- tappedView.bounds.size.height), tappedView.bounds.size.width, tappedView.bounds.size.height);
                 
                 // 添加在browser
                 [self.browser.scrollView addSubview:largeView];
@@ -318,8 +318,8 @@
                     largeView.image = image;
                     [UIView animateWithDuration:zoomDuration animations:^{
                         // 设置放大后的frame
-                        largeView.frame = CGRectMake(((UIImageView*)self.subviews[index]).tag*LBWidth+self.largeViewMargin, self.largeViewMargin, LBWidth-2*self.largeViewMargin, LBHeight-2*self.largeViewMargin);
-                        largeView.contentMode = UIViewContentModeScaleAspectFit;
+
+                        largeView.imageViewFrame = [self getFrameWithImageSize:image.size inContainerRect:largeView.bounds];
                         
                     } completion:^(BOOL finished) {
                         [largeView addGestureRecognizer:[[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(largeImgViewTapped:)]];
@@ -329,8 +329,8 @@
                     
                     // largeView添加到scrollView上
                     largeView.image = image;
-                    largeView.frame = CGRectMake(((UIImageView*)self.subviews[index]).tag*LBWidth+self.largeViewMargin, self.largeViewMargin, LBWidth-2*self.largeViewMargin, LBHeight-2*self.largeViewMargin);
-                    largeView.contentMode = UIViewContentModeScaleAspectFit;
+
+                    largeView.imageViewFrame = [self getFrameWithImageSize:image.size inContainerRect:largeView.bounds];
                     
                     [self.browser.scrollView addSubview:largeView];
                     
@@ -361,18 +361,32 @@
     self.browser.pageControl.hidden = YES;
 
     // 得到缩小后最终的frame值
-    CGRect rect = [self convertRect:((UIView*)self.subviews[self.browser.pageControl.currentPage]).frame toView:self.window];
-    rect.origin.x += self.browser.pageControl.currentPage*LBWidth;
+    CGRect rect = [self convertRect:((UIView*)self.subviews[self.browser.pageControl.currentPage]).frame toView:tappedView];
     
     // 缩小
     [UIView animateWithDuration:zoomDuration animations:^{
-        tappedView.frame = rect;
+        tappedView.imageViewFrame = rect;
     } completion:^(BOOL finished) {
         [self.browser removeFromSuperview];
         self.browser = nil;
         self.largeImgPageViews = nil;
         _previousPage = 0;
     }];
+}
+
+#pragma mark - 工具
+// 根据宽高比 显示在父容器中
+- (CGRect)getFrameWithImageSize:(CGSize)imageSize inContainerRect:(CGRect)containerRect {
+    CGFloat imageSizeAspectRatio = imageSize.width/imageSize.height;
+    CGFloat containerRectSizeAspectRatio = containerRect.size.width/containerRect.size.height;
+    
+    CGRect resultFrame;
+    if (imageSizeAspectRatio >= containerRectSizeAspectRatio) {// 按宽度来约束
+        resultFrame = CGRectMake(0, 0.5*(containerRect.size.height-containerRect.size.width/imageSizeAspectRatio), containerRect.size.width, containerRect.size.width/imageSizeAspectRatio);
+    }else {// 按高度来约束
+        resultFrame = CGRectMake(0.5*(containerRect.size.width-containerRect.size.height*imageSizeAspectRatio), 0, containerRect.size.height*imageSizeAspectRatio, containerRect.size.height);
+    }
+    return resultFrame;
 }
 
 #pragma mark - UIScrollViewDelegate

@@ -5,7 +5,7 @@
 //  Created by aios on 15/9/25.
 //  Copyright (c) 2015年 BlueMobi. All rights reserved.
 //
-// 这是每个分页的类 就是一个ScrollView加上里面一个imageView
+// 这是每个分页的类 就是一个view加上一个scrollView里面再加上一个ScrollView
 #import <UIKit/UIKit.h>
 
 @interface LBLargeImgBrowserPageView : UIView

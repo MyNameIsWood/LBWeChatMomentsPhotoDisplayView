@@ -19,8 +19,7 @@
     if (_imageView == nil) {
         _imageView = [[UIImageView alloc]init];
         _imageView.contentMode = UIViewContentModeScaleAspectFill;
-        _imageView.clipsToBounds = YES;
-        _imageView.frame = self.bounds;
+        _imageView.backgroundColor = [UIColor redColor];
     }
     return _imageView;
 }
@@ -33,7 +32,7 @@
         _scrollView.contentSize = self.bounds.size;
         _scrollView.showsVerticalScrollIndicator = NO;
         _scrollView.showsHorizontalScrollIndicator = NO;
-        
+        _scrollView.backgroundColor = [UIColor clearColor];
         _scrollView.delegate = self;
     }
     return _scrollView;
@@ -74,7 +73,8 @@
 - (void)setFrame:(CGRect)frame {
     [super setFrame:frame];
     self.scrollView.frame = self.bounds;
-    self.imageView.frame = self.bounds;
+    self.scrollView.contentSize = self.bounds.size;
+    
     if (self.indicator) {
         self.indicator.center = CGPointMake(CGRectGetMidX(self.bounds), CGRectGetMidY(self.bounds));
     }
@@ -85,7 +85,8 @@
 - (void)setBounds:(CGRect)bounds {
     [super setBounds:bounds];
     self.scrollView.frame = self.bounds;
-    self.imageView.frame = self.bounds;
+    self.scrollView.contentSize = self.bounds.size;
+    
     if (self.indicator) {
         self.indicator.center = CGPointMake(CGRectGetMidX(self.bounds), CGRectGetMidY(self.bounds));
     }
@@ -95,6 +96,21 @@
 
 - (void)setContentMode:(UIViewContentMode)contentMode {
     self.imageView.contentMode = contentMode;
+}
+
+// imageViewFrame的setter和getter方法
+- (void)setImageViewFrame:(CGRect)imageViewFrame {
+    if (self.imageView) {
+        [self.imageView setFrame:imageViewFrame];
+        
+    }
+}
+
+- (CGRect)imageViewFrame {
+    if (self.imageView) {
+        return self.imageView.frame;
+    }
+    return CGRectZero;
 }
 
 - (void)setMaximumZoomScale:(CGFloat)maximumZoomScale {
@@ -142,10 +158,16 @@
 
 // 使保持在中间
 - (void)scrollViewDidZoom:(UIScrollView *)scrollView {
-    if (scrollView.contentSize.width <= scrollView.bounds.size.width) {
-        [self.imageView setCenter:CGPointMake(0.5*scrollView.bounds.size.width, 0.5*scrollView.bounds.size.height)];
-    }
+    
+    CGFloat xcenter = scrollView.center.x , ycenter = scrollView.center.y;
+    
+    xcenter = scrollView.contentSize.width > scrollView.frame.size.width ? scrollView.contentSize.width/2 : xcenter;
+    
+    ycenter = scrollView.contentSize.height > scrollView.frame.size.height ? scrollView.contentSize.height/2 : ycenter;
+    
+    [self.imageView setCenter:CGPointMake(xcenter, ycenter)];
     
 }
+
 
 @end
